@@ -1,61 +1,182 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="nl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>R.E.SNO — Countdown</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>R.E.SNO Countdown</title>
+
 <style>
-*{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:#050505;color:#fff;font-family:Arial,Helvetica,sans-serif}
-body{display:flex;justify-content:center;align-items:center;padding:20px}
-.wrap{width:min(900px,100%);text-align:center}
-.poster{width:100%;display:block;border-radius:18px;box-shadow:0 15px 60px #000}
-.countdown{
-  margin-top:18px;padding:20px 12px;border-radius:18px;
-  background:linear-gradient(#111,#050505);border:2px solid #6b4617;
-  box-shadow:0 0 30px rgba(255,170,40,.15)
+* {
+  box-sizing: border-box;
 }
-.title{font-weight:800;letter-spacing:4px;font-size:clamp(18px,4vw,32px);margin-bottom:8px}
-.date{font-size:clamp(14px,3vw,20px);letter-spacing:2px;margin-bottom:18px;color:#ddd}
-.clock{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.box{background:#020202;border-radius:12px;padding:12px 5px;border:1px solid #333}
-.num{font-family:"Courier New",monospace;font-weight:900;font-size:clamp(34px,9vw,78px);color:#ffb52f;text-shadow:0 0 14px #ff8c00}
-.lab{font-size:clamp(10px,2vw,14px);letter-spacing:2px;color:#ddd;margin-top:5px}
-.note{margin-top:15px;color:#bbb;font-size:13px}
-@media(max-width:500px){body{padding:8px}.clock{gap:4px}.box{padding:8px 2px}}
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-image: url("IMG20260922-WA0005.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.25);
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 0 10px 7vh;
+  text-align: center;
+}
+
+.title {
+  color: white;
+  font-size: clamp(25px, 6vw, 50px);
+  font-weight: bold;
+  letter-spacing: 4px;
+  margin-bottom: 15px;
+  text-shadow: 0 3px 10px #000;
+}
+
+.countdown {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+
+.box {
+  min-width: 21vw;
+  padding: 10px 5px;
+  background: rgba(0,0,0,0.85);
+  border: 2px solid #d4af37;
+  border-radius: 8px;
+}
+
+.number {
+  color: white;
+  font-size: clamp(28px, 8vw, 70px);
+  font-weight: bold;
+}
+
+.label {
+  color: #d4af37;
+  font-size: clamp(8px, 2.5vw, 14px);
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.message {
+  display: none;
+  color: white;
+  font-size: clamp(28px, 8vw, 60px);
+  font-weight: bold;
+}
 </style>
 </head>
+
 <body>
-<div class="wrap">
-  <img class="poster" src="resno-poster.jpg" alt="R.E.SNO countdown poster">
-  <section class="countdown">
-    <div class="title">COUNTDOWN</div>
-    <div class="date">20 SEPTEMBER → 25 SEPTEMBER 2026</div>
-    <div class="clock">
-      <div class="box"><div class="num" id="days">00</div><div class="lab">DAGEN</div></div>
-      <div class="box"><div class="num" id="hours">00</div><div class="lab">UREN</div></div>
-      <div class="box"><div class="num" id="mins">00</div><div class="lab">MINUTEN</div></div>
-      <div class="box"><div class="num" id="secs">00</div><div class="lab">SECONDEN</div></div>
+
+<div class="overlay"></div>
+
+<div class="content">
+
+  <div class="title">COUNTDOWN</div>
+
+  <div class="countdown" id="countdown">
+
+    <div class="box">
+      <div class="number" id="days">00</div>
+      <div class="label">DAGEN</div>
     </div>
-    <div class="note" id="message">NOG EVEN GEDULD...</div>
-  </section>
+
+    <div class="box">
+      <div class="number" id="hours">00</div>
+      <div class="label">UREN</div>
+    </div>
+
+    <div class="box">
+      <div class="number" id="minutes">00</div>
+      <div class="label">MINUTEN</div>
+    </div>
+
+    <div class="box">
+      <div class="number" id="seconds">00</div>
+      <div class="label">SECONDEN</div>
+    </div>
+
+  </div>
+
+  <div class="message" id="message">
+    HET IS ZOVER!
+  </div>
+
 </div>
+
 <script>
-const target = new Date("2026-09-25T00:00:00+02:00").getTime();
-function tick(){
-  let diff = Math.max(0, target - Date.now());
-  const d = Math.floor(diff/86400000); diff%=86400000;
-  const h = Math.floor(diff/3600000); diff%=3600000;
-  const m = Math.floor(diff/60000); diff%=60000;
-  const s = Math.floor(diff/1000);
-  document.getElementById("days").textContent=String(d).padStart(2,"0");
-  document.getElementById("hours").textContent=String(h).padStart(2,"0");
-  document.getElementById("mins").textContent=String(m).padStart(2,"0");
-  document.getElementById("secs").textContent=String(s).padStart(2,"0");
-  document.getElementById("message").textContent =
-    target-Date.now() <= 0 ? "HET IS ZOVER!" : "NOG EVEN GEDULD...";
+
+const eindDatum = new Date("2026-09-25T00:00:00+02:00").getTime();
+
+function updateCountdown() {
+
+  const nu = new Date().getTime();
+  const verschil = eindDatum - nu;
+
+  if (verschil <= 0) {
+    document.getElementById("countdown").style.display = "none";
+    document.getElementById("message").style.display = "block";
+    return;
+  }
+
+  const dagen = Math.floor(verschil / (1000 * 60 * 60 * 24));
+
+  const uren = Math.floor(
+    (verschil % (1000 * 60 * 60 * 24)) /
+    (1000 * 60 * 60)
+  );
+
+  const minuten = Math.floor(
+    (verschil % (1000 * 60 * 60)) /
+    (1000 * 60)
+  );
+
+  const seconden = Math.floor(
+    (verschil % (1000 * 60)) /
+    1000
+  );
+
+  document.getElementById("days").textContent =
+    String(dagen).padStart(2, "0");
+
+  document.getElementById("hours").textContent =
+    String(uren).padStart(2, "0");
+
+  document.getElementById("minutes").textContent =
+    String(minuten).padStart(2, "0");
+
+  document.getElementById("seconds").textContent =
+    String(seconden).padStart(2, "0");
 }
-tick(); setInterval(tick,1000);
+
+updateCountdown();
+
+setInterval(updateCountdown, 1000);
+
 </script>
+
 </body>
 </html>
